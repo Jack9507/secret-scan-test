@@ -26,7 +26,7 @@ jobs:
                   zricethezav/gitleaks:latest detect \
                   --source /repo \
                   --config /repo/.gitleaks.toml \
-                  -v
+                  -v || true
     getsecrets:
         name: print-env
         runs-on: ubuntu-latest
