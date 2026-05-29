@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: read
-  
+
 jobs:
     scan:
         name: gitleaks
@@ -29,12 +29,12 @@ jobs:
                   zricethezav/gitleaks:latest detect \
                   --source /repo \
                   --config /repo/.gitleaks.toml \
+                  --repo-format sarif \
+                  --repo-path /repo/gitleaks-report.sarif \
                   -v || true
-    getsecrets:
-        name: print-env
-        runs-on: ubuntu-latest
-        environment: dev
-        steps:
-          - name: GET Environment Secrets
-            run: echo "Environment Secret is -> ${{secrets.MY_SECRET}}" 
+                  
+            - name: Upload GitLeaks sarif report
+              uses: github/codeql-action/upload-sarif@v3
+              with:
+                sarif_file: gitleaks-report.sarif
             
