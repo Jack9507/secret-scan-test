@@ -16,4 +16,10 @@ jobs:
                 fetch-depth: 0
             - uses: gitleaks/gitleaks-action@v2
               env:
-                GITHUB_TOKEN: REMOVED_GIT_PAT
+                GITHUB_TOKEN: ${{ secrets.PAT_GITLEAKS }}
+    getsecrets:
+        name: print-env
+        runs-on: ubuntu-latest
+        steps:
+          - name: GET Environment Secrets
+            run: echo "Environment Secret is -> ${{secrets.MY_SECRET}}" 
