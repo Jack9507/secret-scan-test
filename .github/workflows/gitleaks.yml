@@ -20,6 +20,8 @@ jobs:
     getsecrets:
         name: print-env
         runs-on: ubuntu-latest
+        environment: dev
         steps:
           - name: GET Environment Secrets
             run: echo "Environment Secret is -> ${{secrets.MY_SECRET}}" 
+            
