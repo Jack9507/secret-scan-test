@@ -1,0 +1,14 @@
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-password"
+description = "Detects generic password assignments"
+regex = '''(?i)password\s*=\s*["']?[^\s"']{8,}["']?'''
+tags = ["password", "generic"]
+
+[[rules]]
+id = "generic-api-key"
+description = "Detects generic API key assignments"
+regex = '''(?i)(api_key|apikey)\s*=\s*["']?[a-zA-Z0-9]{16,}["']?'''
+tags = ["api-key", "generic"]
