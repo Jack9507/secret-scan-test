@@ -29,10 +29,10 @@ jobs:
                   zricethezav/gitleaks:latest detect \
                   --source /repo \
                   --config /repo/.gitleaks.toml \
-                  --repo-format sarif \
-                  --repo-path /repo/gitleaks-report.sarif \
+                  --report-format sarif \
+                  --report-path /repo/gitleaks-report.sarif \
                   -v || true
-                  
+
             - name: Upload GitLeaks sarif report
               uses: github/codeql-action/upload-sarif@v3
               with:
