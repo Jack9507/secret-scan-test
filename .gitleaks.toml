@@ -1,14 +1,24 @@
-[extend]
-useDefault = true
-
 [[rules]]
 id = "generic-password"
-description = "Detects generic password assignments"
 regex = '''(?i)password\s*=\s*["']?[^\s"']{8,}["']?'''
+entropy = 0.0
 tags = ["password", "generic"]
 
 [[rules]]
 id = "generic-api-key"
-description = "Detects generic API key assignments"
-regex = '''(?i)(api_key|apikey)\s*=\s*["']?[a-zA-Z0-9]{16,}["']?'''
+regex = '''(?i)(api_key|apikey)\s*=\s*\S{16,}'''
+entropy = 0.0
 tags = ["api-key", "generic"]
+
+# Add back important default rules manually
+[[rules]]
+id = "github-pat"
+description = "GitHub Personal Access Token"
+regex = '''ghp_[0-9a-zA-Z]{36}'''
+tags = ["github", "pat"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+tags = ["aws"]
