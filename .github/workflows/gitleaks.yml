@@ -14,11 +14,19 @@ jobs:
             - uses: actions/checkout@v4
               with:
                 fetch-depth: 0
-            - uses: gitleaks/gitleaks-action@v2
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                config-path: .gitleaks.toml
+            # - uses: gitleaks/gitleaks-action@v2
+            #   env:
+            #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            #   with:
+            #     config-path: .gitleaks.toml
+
+            - name: Run GitLeaks for full history scan
+              run: |
+                docker run --rm -v ${{ github.workspace }}:/repo \
+                  zricethezav/gitleaks:latest detect \
+                  --source /repo \
+                  --config /repo/.gitleaks.toml \
+                  -v
     getsecrets:
         name: print-env
         runs-on: ubuntu-latest
