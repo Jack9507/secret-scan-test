@@ -6,6 +6,11 @@ tags = ["password", "generic"]
 
   [rules.allowlist]
   regexes = [
+    '''(?i)password\s*=\s*process\.env\.\w+''',         # ← process.env.X
+    '''(?i)password\s*=\s*os\.environ''',                # ← Python os.environ
+    '''(?i)password\s*=\s*os\.getenv''',                 # ← Python os.getenv
+    '''(?i)password\s*=\s*\$\{\w+\}''',                 # ← ${VARIABLE}
+    '''(?i)password\s*=\s*\$\(\w+\)''',                 # ← $(variable)
     '''(?i)password\s*=\s*["']?(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake)["']?'''
   ]
 
