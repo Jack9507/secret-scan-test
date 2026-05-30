@@ -18,6 +18,6 @@ const server = app.listen(PORT,()=>{
 // console.log(server)
 const username="admin"
 const password= process.env.DB_PASSWORD
-console.log(`Connecting to database with username: ${username} and password: ${password}`)
+console.log("Connecting to database")
 
 
