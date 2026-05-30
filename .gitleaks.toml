@@ -4,13 +4,22 @@ regex = '''(?i)password\s*=\s*["']?[^\s"']{8,}["']?'''
 entropy = 0.0
 tags = ["password", "generic"]
 
+  [rules.allowlist]
+  regexes = [
+    '''(?i)password\s*=\s*["']?(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake)["']?'''
+  ]
+
 [[rules]]
 id = "generic-api-key"
 regex = '''(?i)(api_key|apikey)\s*=\s*\S{16,}'''
 entropy = 0.0
 tags = ["api-key", "generic"]
 
-# Add back important default rules manually
+  [rules.allowlist]
+  regexes = [
+    '''(?i)(your.api.key|goes.here|placeholder|example|changeme|xxxx|dummy|test|fake)'''
+  ]
+
 [[rules]]
 id = "github-pat"
 description = "GitHub Personal Access Token"
@@ -22,3 +31,14 @@ id = "aws-access-key"
 description = "AWS Access Key"
 regex = '''AKIA[0-9A-Z]{16}'''
 tags = ["aws"]
+
+# Global allowlist - skip these paths entirely
+[allowlist]
+paths = [
+  '''node_modules''',         # ← never scan node_modules
+  '''vendor''',               # ← never scan vendor (Python/PHP)
+  '''\.gitleaks\.toml''',     # ← never scan config itself
+  '''package-lock\.json''',
+  '''yarn\.lock''',
+  '''\.md$''',                # ← skip markdown docs (has examples)
+]
