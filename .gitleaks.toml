@@ -1,95 +1,61 @@
 [[rules]]
-id = "generic-password"
-description = "Detects hardcoded passwords"
-regex = '''(?i)password\s*=\s*["']?[^\s"']{8,}["']?'''
+id = "hardcoded-password"
+description = "Detects hardcoded passwords in quotes"
+regex = '''(?i)password\s*=\s*(?:"[^"]{6,}"|'[^']{6,}')'''
 entropy = 0.0
-tags = ["password", "generic"]
+tags = ["password"]
 
   [rules.allowlist]
   regexes = [
-    # variable references - only lowercase/underscore/digits
-    '''(?i)password\s*=\s*[a-z][a-z0-9_]{2,}$''',
-    # env references
-    '''(?i)password\s*=\s*process\.env\.\w+''',
-    '''(?i)password\s*=\s*os\.environ''',
-    '''(?i)password\s*=\s*os\.getenv''',
-    '''(?i)password\s*=\s*\$\{\w+\}''',
-    '''(?i)password\s*=\s*\$\(\w+\)''',
-    '''(?i)password\s*=\s*\$[A-Z_]+''',
-    # placeholder words
-    '''(?i)password\s*=\s*["']?(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake|none|null|true|false)["']?'''
+    '''(?i)password\s*=\s*(?:"[^"]*"|'[^']*')(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake|none|null|enter|insert|add|put|type)(?:"[^"]*"|'[^']*')'''
+  ]
+
+[[rules]]
+id = "hardcoded-api-key"
+description = "Detects hardcoded API keys in quotes"
+regex = '''(?i)(api_key|apikey)\s*=\s*(?:"[^"]{16,}"|'[^']{16,}')'''
+entropy = 0.0
+tags = ["api-key"]
+
+  [rules.allowlist]
+  regexes = [
+    '''(?i)(api_key|apikey)\s*=\s*(?:"[^"]*"|'[^']*')(your.api.key|placeholder|example|changeme|xxxx|dummy|test|fake|none|null)'''
+  ]
+
+[[rules]]
+id = "hardcoded-secret"
+description = "Detects hardcoded secrets and tokens in quotes"
+regex = '''(?i)\b(secret|token|secret_key|auth_token|access_token)\s*=\s*(?:"[^"]{8,}"|'[^']{8,}')'''
+entropy = 0.0
+tags = ["secret"]
+
+  [rules.allowlist]
+  regexes = [
+    '''(?i)\b(secret|token|secret_key|auth_token|access_token)\s*=\s*(?:"[^"]*"|'[^']*')(removed|placeholder|example|changeme|xxxx|dummy|test|fake|none|null)'''
   ]
 
 [[rules]]
 id = "cli-password-arg"
 description = "Detects hardcoded password in CLI arguments"
-regex = '''(?i)["\s]--password["']?\s*,\s*["']([^"'\s]{6,})["']'''
+regex = '''(?i)"--password"\s*,\s*(?:"[^"]{6,}"|'[^']{6,}')'''
 entropy = 0.0
 tags = ["password", "cli"]
 
   [rules.allowlist]
   regexes = [
-    # variable references
-    '''(?i)["']--password["']\s*,\s*["'][a-z][a-z0-9_]{2,}["']''',
-    # placeholders
-    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your|none|null)'''
+    '''(?i)(placeholder|example|changeme|dummy|test|fake|none|null)'''
   ]
 
 [[rules]]
 id = "stdin-write-secret"
 description = "Detects hardcoded secrets written to stdin"
-regex = '''(?i)stdin\.write\s*\(\s*["']([^"'\s]{6,})'''
+regex = '''(?i)stdin\.write\s*\(\s*(?:"[^"\s]{6,}"|'[^'\s]{6,}')'''
 entropy = 0.0
 tags = ["password", "stdin"]
 
   [rules.allowlist]
   regexes = [
-    # variable references
-    '''(?i)stdin\.write\s*\(\s*["'][a-z][a-z0-9_]{2,}["']''',
-    # placeholders
-    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your|none|null)'''
-  ]
-
-[[rules]]
-id = "generic-api-key"
-description = "Detects hardcoded API keys"
-regex = '''(?i)(api_key|apikey)\s*=\s*["']?\S{16,}["']?'''
-entropy = 0.0
-tags = ["api-key", "generic"]
-
-  [rules.allowlist]
-  regexes = [
-    # variable references - only lowercase/underscore/digits
-    '''(?i)(api_key|apikey)\s*=\s*[a-z][a-z0-9_]{2,}$''',
-    # env references
-    '''(?i)(api_key|apikey)\s*=\s*process\.env\.\w+''',
-    '''(?i)(api_key|apikey)\s*=\s*os\.environ''',
-    '''(?i)(api_key|apikey)\s*=\s*os\.getenv''',
-    '''(?i)(api_key|apikey)\s*=\s*\$\{\w+\}''',
-    '''(?i)(api_key|apikey)\s*=\s*\$[A-Z_]+''',
-    # placeholders
-    '''(?i)(your.api.key|goes.here|placeholder|example|changeme|xxxx|dummy|test|fake|none|null)'''
-  ]
-
-[[rules]]
-id = "generic-secret"
-description = "Detects hardcoded secrets and tokens"
-regex = '''(?i)\b(secret|token|auth_key|access_key|private_key|secret_key)\s*=\s*["']?[^\s"']{8,}["']?'''
-entropy = 0.0
-tags = ["secret", "generic"]
-
-  [rules.allowlist]
-  regexes = [
-    # variable references - only lowercase/underscore/digits
-    '''(?i)\b(secret|token|auth_key|access_key|private_key|secret_key)\s*=\s*[a-z][a-z0-9_]{2,}$''',
-    # env references
-    '''(?i)(secret|token|auth_key|access_key)\s*=\s*process\.env\.\w+''',
-    '''(?i)(secret|token|auth_key|access_key)\s*=\s*os\.environ''',
-    '''(?i)(secret|token|auth_key|access_key)\s*=\s*os\.getenv''',
-    '''(?i)(secret|token|auth_key|access_key)\s*=\s*\$\{\w+\}''',
-    '''(?i)(secret|token|auth_key|access_key)\s*=\s*\$[A-Z_]+''',
-    # placeholders
-    '''(?i)(secret|token|auth_key|access_key)\s*=\s*["']?(removed|placeholder|example|changeme|xxxx|dummy|test|fake|your|none|null)["']?'''
+    '''(?i)(placeholder|example|changeme|dummy|test|fake|none|null)'''
   ]
 
 [[rules]]
