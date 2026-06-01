@@ -7,7 +7,12 @@ tags = ["password"]
 
   [rules.allowlist]
   regexes = [
-    '''(?i)password\s*=\s*(?:"[^"]*"|'[^']*')(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake|none|null|enter|insert|add|put|type)(?:"[^"]*"|'[^']*')'''
+    # variable concatenation - password='+var+' or password="+var+"
+    '''(?i)password\s*=\s*['"]\s*\+\s*\w+\s*\+''',
+    # f-strings and format strings - password=f'{var}' or password="{var}"
+    '''(?i)password\s*=\s*(?:f?["'])[^"']*\{[^}]+\}[^"']*["']''',
+    # placeholders
+    '''(?i)password\s*=\s*(?:"[^"]*"|'[^']*')(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake|none|null|enter|insert|add|put|type)'''
   ]
 
 [[rules]]
