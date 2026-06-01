@@ -1,70 +1,95 @@
 [[rules]]
 id = "generic-password"
-description = "Detects generic password assignments"
+description = "Detects hardcoded passwords"
 regex = '''(?i)password\s*=\s*["']?[^\s"']{8,}["']?'''
 entropy = 0.0
 tags = ["password", "generic"]
 
   [rules.allowlist]
   regexes = [
+    # variable references - only lowercase/underscore/digits
+    '''(?i)password\s*=\s*[a-z][a-z0-9_]{2,}$''',
+    # env references
     '''(?i)password\s*=\s*process\.env\.\w+''',
     '''(?i)password\s*=\s*os\.environ''',
     '''(?i)password\s*=\s*os\.getenv''',
     '''(?i)password\s*=\s*\$\{\w+\}''',
     '''(?i)password\s*=\s*\$\(\w+\)''',
-    '''(?i)password\s*=\s*["']?(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake)["']?'''
+    '''(?i)password\s*=\s*\$[A-Z_]+''',
+    # placeholder words
+    '''(?i)password\s*=\s*["']?(removed|placeholder|example|your.password|changeme|xxxx|dummy|test|fake|none|null|true|false)["']?'''
   ]
 
 [[rules]]
 id = "cli-password-arg"
-description = "Detects password passed as CLI argument"
+description = "Detects hardcoded password in CLI arguments"
 regex = '''(?i)["\s]--password["']?\s*,\s*["']([^"'\s]{6,})["']'''
 entropy = 0.0
 tags = ["password", "cli"]
 
   [rules.allowlist]
   regexes = [
-    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your)'''
+    # variable references
+    '''(?i)["']--password["']\s*,\s*["'][a-z][a-z0-9_]{2,}["']''',
+    # placeholders
+    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your|none|null)'''
   ]
 
 [[rules]]
 id = "stdin-write-secret"
-description = "Detects secrets written to stdin"
+description = "Detects hardcoded secrets written to stdin"
 regex = '''(?i)stdin\.write\s*\(\s*["']([^"'\s]{6,})'''
 entropy = 0.0
 tags = ["password", "stdin"]
 
   [rules.allowlist]
   regexes = [
-    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your)'''
+    # variable references
+    '''(?i)stdin\.write\s*\(\s*["'][a-z][a-z0-9_]{2,}["']''',
+    # placeholders
+    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your|none|null)'''
   ]
 
 [[rules]]
 id = "generic-api-key"
-description = "Detects generic API key assignments"
-regex = '''(?i)(api_key|apikey)\s*=\s*\S{16,}'''
+description = "Detects hardcoded API keys"
+regex = '''(?i)(api_key|apikey)\s*=\s*["']?\S{16,}["']?'''
 entropy = 0.0
 tags = ["api-key", "generic"]
 
   [rules.allowlist]
   regexes = [
-    '''(?i)(your.api.key|goes.here|placeholder|example|changeme|xxxx|dummy|test|fake)'''
+    # variable references - only lowercase/underscore/digits
+    '''(?i)(api_key|apikey)\s*=\s*[a-z][a-z0-9_]{2,}$''',
+    # env references
+    '''(?i)(api_key|apikey)\s*=\s*process\.env\.\w+''',
+    '''(?i)(api_key|apikey)\s*=\s*os\.environ''',
+    '''(?i)(api_key|apikey)\s*=\s*os\.getenv''',
+    '''(?i)(api_key|apikey)\s*=\s*\$\{\w+\}''',
+    '''(?i)(api_key|apikey)\s*=\s*\$[A-Z_]+''',
+    # placeholders
+    '''(?i)(your.api.key|goes.here|placeholder|example|changeme|xxxx|dummy|test|fake|none|null)'''
   ]
 
 [[rules]]
 id = "generic-secret"
-description = "Detects generic secret/key assignments"
-regex = '''(?i)(secret|token|key|credential|auth)\s*=\s*\S{8,}'''
+description = "Detects hardcoded secrets and tokens"
+regex = '''(?i)\b(secret|token|auth_key|access_key|private_key|secret_key)\s*=\s*["']?[^\s"']{8,}["']?'''
 entropy = 0.0
 tags = ["secret", "generic"]
 
   [rules.allowlist]
   regexes = [
-    '''(?i)(secret|token|key)\s*=\s*process\.env\.\w+''',
-    '''(?i)(secret|token|key)\s*=\s*os\.environ''',
-    '''(?i)(secret|token|key)\s*=\s*os\.getenv''',
-    '''(?i)(secret|token|key)\s*=\s*\$\{\w+\}''',
-    '''(?i)(secret|token|key)\s*=\s*["']?(removed|placeholder|example|changeme|xxxx|dummy|test|fake|your)["']?'''
+    # variable references - only lowercase/underscore/digits
+    '''(?i)\b(secret|token|auth_key|access_key|private_key|secret_key)\s*=\s*[a-z][a-z0-9_]{2,}$''',
+    # env references
+    '''(?i)(secret|token|auth_key|access_key)\s*=\s*process\.env\.\w+''',
+    '''(?i)(secret|token|auth_key|access_key)\s*=\s*os\.environ''',
+    '''(?i)(secret|token|auth_key|access_key)\s*=\s*os\.getenv''',
+    '''(?i)(secret|token|auth_key|access_key)\s*=\s*\$\{\w+\}''',
+    '''(?i)(secret|token|auth_key|access_key)\s*=\s*\$[A-Z_]+''',
+    # placeholders
+    '''(?i)(secret|token|auth_key|access_key)\s*=\s*["']?(removed|placeholder|example|changeme|xxxx|dummy|test|fake|your|none|null)["']?'''
   ]
 
 [[rules]]
