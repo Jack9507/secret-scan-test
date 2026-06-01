@@ -39,3 +39,32 @@ git gc --prune=now --aggressive
 
 # Step 3: force push
 git push origin main --force
+
+
+
+
+
+
+
+-------------Using Precommit hook to locally detech secrets before committing:
+
+1. pip install pre-commit
+2. Create .pre-commit-config.yaml in repo root:
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.24.3
+    hooks:
+      - id: gitleaks
+        args: ['--config', '.gitleaks.toml']
+3. Install the hook:
+    pre-commit install    # ← runs automatically on every git commit
+
+4. How it works:
+developer runs: git commit
+                    ↓
+          pre-commit hook fires
+                    ↓
+          gitleaks scans staged files
+                    ↓
+    secret found?  YES → commit blocked ❌
+    secret found?  NO  → commit allowed ✅
