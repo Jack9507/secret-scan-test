@@ -1,5 +1,6 @@
 [[rules]]
 id = "generic-password"
+description = "Detects generic password assignments"
 regex = '''(?i)password\s*=\s*["']?[^\s"']{8,}["']?'''
 entropy = 0.0
 tags = ["password", "generic"]
@@ -15,7 +16,32 @@ tags = ["password", "generic"]
   ]
 
 [[rules]]
+id = "cli-password-arg"
+description = "Detects password passed as CLI argument"
+regex = '''(?i)["\s]--password["']?\s*,\s*["']([^"'\s]{6,})["']'''
+entropy = 0.0
+tags = ["password", "cli"]
+
+  [rules.allowlist]
+  regexes = [
+    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your)'''
+  ]
+
+[[rules]]
+id = "stdin-write-secret"
+description = "Detects secrets written to stdin"
+regex = '''(?i)stdin\.write\s*\(\s*["']([^"'\s]{6,})'''
+entropy = 0.0
+tags = ["password", "stdin"]
+
+  [rules.allowlist]
+  regexes = [
+    '''(?i)(placeholder|example|changeme|xxxx|dummy|test|fake|your)'''
+  ]
+
+[[rules]]
 id = "generic-api-key"
+description = "Detects generic API key assignments"
 regex = '''(?i)(api_key|apikey)\s*=\s*\S{16,}'''
 entropy = 0.0
 tags = ["api-key", "generic"]
