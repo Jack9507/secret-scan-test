@@ -129,6 +129,7 @@ repos:
       - id: gitleaks
         args: ["--config", ".gitleaks.toml"]
 ```
+## NOTE: create .gitleaks.toml at root of your github repo
 
 Install hook scripts:
 ```bash
